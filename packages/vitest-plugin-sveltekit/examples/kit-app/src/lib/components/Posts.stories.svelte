@@ -3,6 +3,8 @@
   import { redirect } from '@sveltejs/kit';
   import { expect, waitFor } from 'storybook/test';
 
+  import { goto } from '$app/navigation';
+
   import { createPost, getPosts, getStats } from '#lib/posts.remote.ts';
 
   import preview from '../../../.storybook/preview';
@@ -11,20 +13,12 @@
   const { Story } = preview.meta({
     parameters: { demo: true },
     title: 'Remote functions/Posts',
+    tags: ['!manifest'],
     component: Posts,
     beforeEach: () => {
       mockRemote(getStats).mockResolvedValue({ views: 1, likes: 0 });
     },
   });
-
-  // `goto` from Storybook's `$app/navigation` mock dispatches this event.
-  let navigations: unknown[][] = [];
-  function recordNavigations() {
-    navigations = [];
-    const listener = (event: Event) => navigations.push((event as CustomEvent<unknown[]>).detail);
-    window.addEventListener('storybook:goto', listener);
-    return () => window.removeEventListener('storybook:goto', listener);
-  }
 </script>
 
 <Story
@@ -56,13 +50,13 @@
   beforeEach={() => {
     mockRemote(getPosts).mockResolvedValue([]);
     mockRemote(createPost).mockImplementation(() => redirect(303, '/posts/42'));
-    return recordNavigations();
   }}
   play={async ({ canvas, userEvent, step }) => {
     await step('Create a post: the (mocked) handler redirects to /posts/42', async () => {
       await userEvent.type(await canvas.findByLabelText('Title'), 'Go somewhere');
       await userEvent.click(canvas.getByRole('button', { name: 'Create' }));
     });
-    await waitFor(() => expect(navigations[0]?.[0]).toBe('/posts/42'));
+    // `goto` from Storybook's `$app/navigation` mock is a mock function.
+    await waitFor(() => expect(goto).toHaveBeenCalledWith('/posts/42', expect.anything()));
   }}
 />

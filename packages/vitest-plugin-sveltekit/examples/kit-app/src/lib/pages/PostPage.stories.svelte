@@ -9,15 +9,19 @@
 
   import preview from '../../../.storybook/preview';
   import PostPage from './PostPage.svelte';
+  import { page } from '$app/state';
 
   const post = postDetails.find((item) => item.title === 'Remote functions, one month in')!;
 
   const { Story } = preview.meta({
     title: 'Pages/Post',
+    tags: ['!manifest'],
     component: PostPage,
     parameters: {
       layout: 'fullscreen',
-      sveltekit_experimental: { state: { page: { url: new URL(`http://localhost/posts/${post.id}`) } } },
+    },
+    beforeEach() {
+      page.url = new URL(`http://localhost/posts/${post.id}`);
     },
     args: { id: post.id },
   });

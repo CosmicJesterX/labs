@@ -7,12 +7,16 @@
   import preview from '../../../.storybook/preview';
   import ErrorPage from './ErrorPage.svelte';
   import NotFoundPage from './NotFoundPage.svelte';
+  import { page } from '$app/state';
 
   const { Story } = preview.meta({
     title: 'Pages/Status',
+    tags: ['!manifest'],
     parameters: {
       layout: 'fullscreen',
-      sveltekit_experimental: { state: { page: { url: new URL('http://localhost/nowhere') } } },
+    },
+    beforeEach() {
+      page.url = new URL('http://localhost/nowhere');
     },
   });
 </script>

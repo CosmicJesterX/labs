@@ -3,6 +3,8 @@
   import { error, redirect } from '@sveltejs/kit';
   import { expect, waitFor } from 'storybook/test';
 
+  import { goto } from '$app/navigation';
+
   import { deletePost, getPosts, getStats } from '#lib/posts.remote.ts';
 
   import preview from '../../../.storybook/preview';
@@ -16,6 +18,7 @@
   const { Story } = preview.meta({
     parameters: { demo: true },
     title: 'Remote functions/PostList',
+    tags: ['!manifest'],
     component: PostList,
     beforeEach: () => {
       mockRemote(getStats).mockImplementation(async (id) => ({ views: id * 100, likes: id }));
@@ -134,17 +137,10 @@
     mockRemote(getPosts).mockImplementation(() => redirect(303, '/elsewhere'));
   }}
   play={async ({ step }) => {
-    // `goto` from Storybook's `$app/navigation` mock dispatches this event.
-    const seen: unknown[] = [];
-    const listener = (event: Event) => seen.push((event as CustomEvent).detail);
-    window.addEventListener('storybook:goto', listener);
-    try {
-      await step('Call getPosts(): its mock redirects to /elsewhere', async () => {
-        await getPosts();
-      });
-      await waitFor(() => expect(seen).toContainEqual(['/elsewhere', undefined]));
-    } finally {
-      window.removeEventListener('storybook:goto', listener);
-    }
+    await step('Call getPosts(): its mock redirects to /elsewhere', async () => {
+      await getPosts();
+    });
+    // `goto` from Storybook's `$app/navigation` mock is a mock function.
+    await waitFor(() => expect(goto).toHaveBeenCalledWith('/elsewhere', undefined));
   }}
 />

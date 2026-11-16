@@ -1,10 +1,24 @@
+<!--
+@component
+The views and likes of a post, such as "1.3K views" and "96 likes". It loads them itself with
+`getReadingStats(id)`: one request for all the stats on the page. While they load, it shows a
+skeleton, and when they fail, "Stats unavailable".
+
+@summary the views and likes of a post, which load on their own
+@import import ReadingStats from '#lib/blog/ReadingStats.svelte';
+-->
 <script lang="ts">
   import Skeleton from '#lib/ui/Skeleton.svelte';
 
   import { getReadingStats } from './blog.remote.ts';
   import { countOf } from './posts.ts';
 
-  let { id }: { id: number } = $props();
+  let {
+    id,
+  }: {
+    /** The id of the post. */
+    id: number;
+  } = $props();
 
 </script>
 

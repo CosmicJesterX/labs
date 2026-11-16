@@ -1,3 +1,14 @@
+<!--
+@component
+The place where toasts show. It announces error toasts at once (`role="alert"`) and other
+toasts when the reader is free (`role="status"`). When the pointer or the focus is on a toast,
+the toasts stay. `Layout` already has one.
+
+To show a toast, call `toast(message, { tone, timeout })` from `#lib/ui/toasts.svelte.ts`.
+
+@summary shows the toasts that `toast()` adds; `Layout` already has one
+@import import ToastRegion from '#lib/ui/ToastRegion.svelte';
+-->
 <script lang="ts">
   import Toast from './Toast.svelte';
   import { dismissToast, pauseToasts, resumeToasts, toasts } from './toasts.svelte.ts';

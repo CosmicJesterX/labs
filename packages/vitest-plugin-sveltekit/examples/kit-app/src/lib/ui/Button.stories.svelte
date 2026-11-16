@@ -6,6 +6,7 @@
 
   const { Story } = preview.meta({
     title: 'UI/Button',
+    tags: ['autodocs'],
     component: Button,
     parameters: { layout: 'centered' },
     argTypes: {
@@ -13,14 +14,20 @@
       size: { control: 'inline-radio', options: ['sm', 'md'] },
     },
   });
+
+  const sizes: ('md' | 'sm')[] = ['md', 'sm'];
 </script>
 
+<!-- The main action of a view, such as Publish. Use one primary button per view. -->
 <Story name="Primary">Publish</Story>
 
+<!-- The other actions of a view, next to the primary button. -->
 <Story name="Secondary" args={{ variant: 'secondary' }}>Save draft</Story>
 
+<!-- An action of low importance, such as Cancel next to Publish. -->
 <Story name="Ghost" args={{ variant: 'ghost' }}>Cancel</Story>
 
+<!-- An action that deletes data. Ask for confirmation first, in a `Dialog`. -->
 <Story name="Danger" args={{ variant: 'danger' }}>Delete post</Story>
 
 <Story name="Small" args={{ size: 'sm' }}>Edit</Story>
@@ -33,6 +40,7 @@
   }}>Publish</Story
 >
 
+<!-- While the action runs, such as a form submit. Screen readers hear that it is busy. -->
 <Story
   name="Loading"
   args={{ loading: true, type: 'submit' }}
@@ -43,6 +51,7 @@
   }}>Publishing…</Story
 >
 
+<!-- With `href`, the button is a link. Use it for navigation, such as to the editor. -->
 <Story
   name="Link"
   args={{ href: '/posts/new', variant: 'secondary' }}
@@ -54,6 +63,7 @@
   }}>Write a post</Story
 >
 
+<!-- A disabled link loses its `href`, so nobody can follow it. -->
 <Story
   name="Disabled link"
   args={{ href: '/posts/new', disabled: true }}
@@ -64,10 +74,11 @@
   }}>Write a post</Story
 >
 
-<Story name="Long label">Publish this post and tell everyone who follows the blog about it</Story>
+<Story name="Long label" tags={['!manifest']}>Publish this post and tell everyone who follows the blog about it</Story>
 
 <Story
   name="Focus"
+  tags={['!manifest']}
   play={async ({ canvas, userEvent }) => {
     await userEvent.tab();
     await expect(canvas.getByRole('button', { name: 'Publish' })).toHaveFocus();
@@ -81,6 +92,7 @@
 
 <Story
   name="Dark"
+  tags={['!manifest']}
   asChild
   globals={{ theme: 'dark' }}
   parameters={{ controls: { disable: true } }}
@@ -93,7 +105,7 @@
 
 {#snippet variants()}
   <div class="grid">
-    {#each ['md', 'sm'] as const as size (size)}
+    {#each sizes as size (size)}
       <div class="row">
         <Button {size}>Publish</Button>
         <Button {size} variant="secondary">Save draft</Button>
